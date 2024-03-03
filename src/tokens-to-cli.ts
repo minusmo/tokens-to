@@ -23,7 +23,7 @@ import {
   extractDirName,
   resolveFilePathObjectMap,
 } from './files.js';
-import { formatCss, formatJson, log, removeQuotationMarks } from './format.js';
+import { formatCss, formatJson, removeQuotationMarks } from './format.js';
 import { Command } from 'commander';
 import { Path } from 'glob';
 /**
@@ -90,10 +90,8 @@ export class TokensToCli {
         }
       })
       .action(async (files: string[], options) => {
-        log('Converting js to css');
         try {
           const cliOptions = parseCssOptions(options) as CssGenerationConfig;
-          log('Cli Option parsed:', cliOptions);
           /**
            * Option priority.
            * 1.tokens-to.config.json if exist
@@ -107,32 +105,17 @@ export class TokensToCli {
               ...cliOptions,
               sources: resolveFileSources(files, css.sources),
             }) as Required<CssGenerationConfig>;
-          log(
-            'Options merged: ',
-            sources,
-            outFileName,
-            outDir,
-            bundled,
-            selector,
-            prefix
-          );
           const cssVariables = new CssVariables();
           cssVariables.setPrefix(prefix);
           const modulePathObjectMap: Map<Path, Object> =
             await resolveFilePathObjectMap(sources);
-          log('ModulePathObjectMap: ', modulePathObjectMap);
           if (bundled) {
             cssVariables.resolveMany([...modulePathObjectMap.values()]);
-            log('Cssvariables: ', cssVariables.getCssVariableRawString());
-            log('Before resolving outPath:');
-            log('outDir:', outDir);
-            log('outFileName:', outFileName);
             const outPath = composeFilePath(
               outDir,
               outFileName,
               CSS_FILE_EXTENSION
             );
-            log('Outpath is resolved: ', outPath);
             const wrappedCssVariablesString =
               CssVariables.wrapCssStringWithSelector(
                 selector,
@@ -216,14 +199,11 @@ export class TokensToCli {
       })
       .action(async (files: string[], options) => {
         const { json } = this._configuration;
-        log('Converting js to json');
         try {
           const cliOptions = parseJsonOptions(options) as JsonGenerationConfig;
-          log('Cli Option parsed:', cliOptions);
           /**
            * Option priority.
            * 1.tokens-to.config.json if exist
-           * 2.
            * default value of cli arguement files is [](an empty array).
            * when no argument is given, if (files == []),
            * then should try to use sources in config
@@ -236,23 +216,16 @@ export class TokensToCli {
               sources: resolveFileSources(files, json.sources),
             }
           ) as Required<JsonGenerationConfig>;
-          log('Options merged: ', sources, outFileName, outDir, bundled);
           const cssVariables = new CssVariables();
           const modulePathObjectMap: Map<Path, Object> =
             await resolveFilePathObjectMap(sources);
-          log('ModulePathObjectMap: ', modulePathObjectMap);
           if (bundled) {
             cssVariables.resolveMany([...modulePathObjectMap.values()]);
-            log('Cssvariables: ', cssVariables.getCssVariableRawString());
-            log('Before resolving outPath:');
-            log('outDir:', outDir);
-            log('outFileName:', outFileName);
             const outPath = composeFilePath(
               outDir,
               outFileName,
               JSON_FILE_EXTENSION
             );
-            log('Outpath is resolved: ', outPath);
             await makeDir(outDir);
             writeFileAt(
               outPath,

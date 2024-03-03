@@ -141,17 +141,13 @@ export async function resolveFilePathObjectMap(
   });
   const modulePathObjectMap: Map<Path, Object> = new Map();
   for await (const foundSource of foundSources) {
-    log('Found source: ', foundSource);
-    log('And its fullpath: ', foundSource.fullpath());
     const moduleObject = require(foundSource.fullpath());
-    log('ModuleObject: ', moduleObject);
     const moduleObjectWithObjectsOnly: Record<string, Object> = {};
     for (const k in moduleObject) {
       if (isObject(moduleObject[k])) {
         moduleObjectWithObjectsOnly[k] = moduleObject[k];
       }
     }
-    log('ModuleEntriesWithObjectsOnly: ', moduleObjectWithObjectsOnly);
     modulePathObjectMap.set(foundSource, moduleObjectWithObjectsOnly);
   }
   return modulePathObjectMap;
