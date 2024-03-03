@@ -59,5 +59,12 @@
   },
   "engines": {
     "node": "^16.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/minusmo/tokens-to.git"
+  },
+  "bugs": {
+    "url": "https://github.com/minusmo/tokens-to/issues"
   }
 }
