@@ -6,3 +6,5 @@ tsconfig.json
 tsconfig.tsbuildinfo
 api-extractor.json
 .eslintcache
+jest.config.js
+tokens-to.config.json
