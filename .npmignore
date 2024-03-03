@@ -1,0 +1,8 @@
+**/__mocks__/**
+**/__tests__/**
+tests
+src
+tsconfig.json
+tsconfig.tsbuildinfo
+api-extractor.json
+.eslintcache
