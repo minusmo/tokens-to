@@ -1,6 +1,6 @@
 {
   "name": "tokens-to",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Converter for css and js tokens",
   "main": "./build/index.js",
   "scripts": {
