@@ -1,6 +1,6 @@
 {
   "name": "tokens-to",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Converter for css and js tokens",
   "main": "./build/index.js",
   "scripts": {
@@ -33,7 +33,9 @@
     "style",
     "object",
     "convert",
-    "transpile"
+    "transpile",
+    "declaration",
+    "definition"
   ],
   "author": "HoJoon Eum",
   "license": "MIT",
