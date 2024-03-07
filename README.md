@@ -19,6 +19,61 @@ npm install --save-dev tokens-to
 ```
 
 ## **Usage**
+### Example
+Let's say there is a js token like following.
+```javascript
+const colors = {
+  whites: [
+    '#fffff0',
+    '#fffff1'
+    '#fffff2'
+  ]
+}
+
+module.exports = { colors };
+
+```
+And this is what you get after the conversion.
+```css
+:root {
+  --colors-whites-0: #fffff0;
+  --colors-whites-1: #fffff1;
+  --colors-whites-2: #fffff2;
+}
+
+```
+When there are multiple tokens like following,
+```javascript
+const colors = {
+  whites: [
+    '#fffff0',
+    '#fffff1'
+    '#fffff2'
+  ]
+}
+
+const curves = {
+  card: [
+    10,
+    20,
+    30,
+  ]
+}
+
+module.exports = { colors, curves };
+```
+And then this is what you get after the conversion.
+```css
+:root {
+  --colors-whites-0: #fffff0;
+  --colors-whites-1: #fffff1;
+  --colors-whites-2: #fffff2;
+  --curves-card-0: 10;
+  --curves-card-1: 20;
+  --curves-card-2: 30;
+}
+
+```
 
 ### To Do Before converting
 
