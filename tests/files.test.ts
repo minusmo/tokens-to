@@ -2,12 +2,7 @@
  * Testing function for converting object to json
  */
 import { ResultCode, makeDir, writeFileAt } from '../src/files';
-import {
-  formatCss,
-  formatJson,
-  serialize,
-  removeQuotationMarks,
-} from '../src/format';
+import { removeQuotationMarks } from '../src/format';
 import { CssVariables } from '../src/cssvariables';
 
 describe('Test files', () => {
@@ -23,7 +18,7 @@ describe('Test files', () => {
   test('Test object to json writer', async () => {
     const jsonExtension = '.json';
     const targetPath = outDir + '/' + fileName + jsonExtension;
-    const formattedJson = formatJson(serialize(token));
+    const formattedJson = JSON.stringify(token);
     /**
      * should be ok when file is written successfully.
      * fail test may be required.
@@ -41,7 +36,7 @@ describe('Test files', () => {
       ':root',
       cssVariables.getCssVariableRawString()
     );
-    const formattedCss = formatCss(removeQuotationMarks(wrappedTokens));
+    const formattedCss = removeQuotationMarks(wrappedTokens);
     /**
      * should be ok when file is written successfully.
      * fail test may be required.
