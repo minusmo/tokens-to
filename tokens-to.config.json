@@ -1,6 +1,6 @@
 {
   "css": {
-    "sources": ["./tokens/*.js"],
+    "sources": ["./tokens.js"],
     "outFileName": "cssvariables",
     "outDir": "./dist/css",
     "bundled": true,
@@ -8,7 +8,7 @@
     "prefix": ""
   },
   "json": {
-    "sources": ["./tokens/*.js"],
+    "sources": ["./tokens.js"],
     "outFileName": "cssvariables",
     "outDir": "./dist/json",
     "bundled": false
