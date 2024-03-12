@@ -2,9 +2,10 @@
 **/__tests__/**
 tests
 src
+dist
 tsconfig.json
 tsconfig.tsbuildinfo
 api-extractor.json
 .eslintcache
-jest.config.js
+jest.config.cjs
 tokens-to.config.json
