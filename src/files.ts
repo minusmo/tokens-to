@@ -1,8 +1,7 @@
 import { writeFile, mkdir } from 'node:fs/promises';
-import { format, normalize } from 'node:path';
-import { basename, join, dirname } from 'node:path';
+import { format, normalize, basename, join, dirname } from 'node:path';
 import { Path, glob } from 'glob';
-import { errorLog, log } from './format';
+import { readFileSync } from 'node:fs';
 
 export const JS_FILE_EXTENSION = '.js';
 export enum ResultCode {
@@ -23,11 +22,11 @@ export async function writeFileAt(
   try {
     await writeFile(path, token);
     const successLog = `${extension} file of tokens created at: `;
-    log(successLog, path);
+    console.log(successLog, path);
     return ResultCode.SUCCESS;
   } catch (err) {
     const failLog = `${extension} file creation failed with: `;
-    errorLog(failLog, err);
+    console.error(failLog, err);
     return ResultCode.FAIL;
   }
 }
@@ -40,11 +39,11 @@ export async function makeDir(dirPath: string): Promise<ResultCode> {
   try {
     await mkdir(dirPath, { recursive: true });
     const successLog = `${dirPath} is created`;
-    log(successLog);
+    console.log(successLog);
     return ResultCode.SUCCESS;
   } catch (err) {
     const failLog = `${dirPath} creation is failed with: `;
-    errorLog(failLog, err);
+    console.error(failLog, err);
     return ResultCode.FAIL;
   }
 }
@@ -57,23 +56,23 @@ export function getRootProjectPath(): string {
 }
 /**
  * Compose given file path with fixing paths
- * @param outDir outdirectory
+ * @param dir directory path
  * @param filename filename
  * @param extension extension for the file
  * @returns composed file path
  */
 export function composeFilePath(
-  outDir: string,
+  dir: string,
   filename: string,
   extension: string
 ): string {
   /**
    * filename doesn't include .css extension name.
-   * outDir is expected to be absolute path.
-   * outDir is expected to be got from configuration file.
+   * dir is expected to be absolute path.
+   * dir is expected to be got from configuration file.
    */
-  if (outDir.endsWith('/') === false) {
-    outDir = outDir + '/';
+  if (dir.endsWith('/') === false) {
+    dir = dir + '/';
   }
   if (filename.startsWith('/')) {
     filename = filename.substring(1);
@@ -90,7 +89,7 @@ export function composeFilePath(
   return normalize(
     format({
       root: '/',
-      dir: normalize(outDir),
+      dir: normalize(dir),
       name: filename,
       ext: extension,
     })
@@ -141,7 +140,7 @@ export async function resolveFilePathObjectMap(
   });
   const modulePathObjectMap: Map<Path, Object> = new Map();
   for await (const foundSource of foundSources) {
-    const moduleObject = require(foundSource.fullpath());
+    const moduleObject = await import(foundSource.fullpath());
     const moduleObjectWithObjectsOnly: Record<string, Object> = {};
     for (const k in moduleObject) {
       if (isObject(moduleObject[k])) {
@@ -153,7 +152,7 @@ export async function resolveFilePathObjectMap(
   return modulePathObjectMap;
 }
 /**
- *
+ * Check whether given argument is object or not
  * @param something
  * @returns argument is object or not
  */
@@ -161,7 +160,7 @@ export function isObject(something: any): boolean {
   return typeof something === 'object' && Array.isArray(something) === false;
 }
 /**
- *
+ * Check whether given argument is object or not
  * @param something
  * @returns argument is object or not
  */
@@ -194,4 +193,18 @@ export function resolveFileSources(
  */
 export async function resolveModule(modulePath: string) {
   return await import(modulePath);
+}
+/**
+ * Read json from path
+ * @param jsonPath 
+ * @returns parsed js object.
+ */
+export function readJson(jsonPath: string): Object {
+  try {
+    const json = readFileSync(jsonPath, 'utf-8');
+    return JSON.parse(json);
+  } catch (error) {
+    console.error('Error reading or parsing json:', error);
+    return {};
+  }
 }

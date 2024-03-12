@@ -1,5 +1,4 @@
-import { composeFilePath, getRootProjectPath, isNotObject } from './files';
-import { errorLog } from './format';
+import { composeFilePath, getRootProjectPath, isNotObject, readJson } from './files.js';
 import { extname } from 'node:path';
 
 export const JSON_FILE_EXTENSION = '.json';
@@ -16,7 +15,7 @@ const OPTION_KEYS: OptionKey[] = [
 export const CSS_GENERATION_CONFIG_DEFAULT: Required<CssGenerationConfig> = {
   sources: [],
   outFileName: 'tokens',
-  outDir: getRootProjectPath() + '/dist/css',
+  outDir: './dist/css',
   bundled: true,
   selector: ':root',
   prefix: '',
@@ -24,7 +23,7 @@ export const CSS_GENERATION_CONFIG_DEFAULT: Required<CssGenerationConfig> = {
 export const JSON_GENERATION_CONFIG_DEFAULT: Required<JsonGenerationConfig> = {
   sources: [],
   outFileName: 'tokens',
-  outDir: getRootProjectPath() + '/dist/json',
+  outDir: './dist/json',
   bundled: true,
 };
 export const CONFIG_DEFAULT: Required<Configuration> = {
@@ -107,7 +106,7 @@ export function validateOptions(options: CssGenerationConfig): void {
   }
   if (Object.keys(errors).length > 0) {
     for (const [config, error] of Object.entries(errors)) {
-      errorLog(`${config} error by ${error.message}`);
+      console.error(`${config} error by ${error.message}`);
     }
     throw new IllegalOptionError('Command line option errors');
   }
@@ -124,16 +123,16 @@ export function isTs(filePath: string): boolean {
  * Get configuration from config file.
  * @returns Configuration from config file or default when failed.
  */
-export function getConfiguration(): Required<Configuration> {
+export async function getConfiguration(): Promise<Required<Configuration>> {
   try {
-    const config = require(composeFilePath(
+    const config = readJson(composeFilePath(
       getRootProjectPath(),
       CONFIGURATION_FILE,
       JSON_FILE_EXTENSION
     )) as Configuration;
     return Object.assign(CONFIG_DEFAULT, config);
   } catch (err) {
-    errorLog(
+    console.error(
       'Configuration load failed. Try to use default configuration',
       err
     );

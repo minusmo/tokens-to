@@ -1,4 +1,5 @@
 import {
+  CONFIG_DEFAULT,
   CSS_FILE_EXTENSION,
   Configuration,
   CssGenerationConfig,
@@ -23,9 +24,9 @@ import {
   extractDirName,
   resolveFilePathObjectMap,
 } from './files.js';
-import { formatCss, formatJson, removeQuotationMarks } from './format.js';
 import { Command } from 'commander';
 import { Path } from 'glob';
+import { removeQuotationMarks } from './format.js';
 /**
  * Cli for execute command on shell.
  */
@@ -40,8 +41,8 @@ export class TokensToCli {
    * with configuration: npm js2css, npm js2css -m token1.js token2.js
    * without configuration: npm js2css
    */
-  private _configuration: Required<Configuration> = getConfiguration();
-  private readonly _version = require('../package.json').version;
+  private _configuration: Required<Configuration> = CONFIG_DEFAULT;
+  private readonly _version = '0.0.5';
   private _cliProgram: Command;
   constructor() {
     const program = new Command();
@@ -52,6 +53,9 @@ export class TokensToCli {
       )
       .version(this._version);
     this._cliProgram = program;
+    (async () =>{
+      this._configuration = await getConfiguration();
+    })();
   }
   /**
    * Run js2css.
@@ -94,11 +98,10 @@ export class TokensToCli {
           const cliOptions = parseCssOptions(options) as CssGenerationConfig;
           /**
            * Option priority.
-           * 1.tokens-to.config.json if exist
+           * if tokens-to.config.json if exist
            * default value of cli arguement files is [](an empty array).
            * when no argument is given, if (files == []),
            * then should try to use sources in config
-           *
            */
           const { sources, outFileName, outDir, bundled, selector, prefix } =
             Object.assign(css, {
@@ -124,7 +127,7 @@ export class TokensToCli {
             await makeDir(outDir);
             writeFileAt(
               outPath,
-              formatCss(removeQuotationMarks(wrappedCssVariablesString))
+              removeQuotationMarks(wrappedCssVariablesString)
             );
           } else {
             for (const [path, object] of modulePathObjectMap.entries()) {
@@ -151,7 +154,7 @@ export class TokensToCli {
               await makeDir(outDirPath);
               writeFileAt(
                 outFilePath,
-                formatCss(removeQuotationMarks(wrappedCssVariablesString))
+                removeQuotationMarks(wrappedCssVariablesString)
               );
               cssVariables.reset();
             }
@@ -165,11 +168,6 @@ export class TokensToCli {
         }
       });
     return this;
-  }
-  public ts2css(): void {
-    this._cliProgram
-      .command('ts2css')
-      .description('convert ts tokens to css variables');
   }
   public runJs2Json(): TokensToCli {
     this._cliProgram
@@ -229,7 +227,7 @@ export class TokensToCli {
             await makeDir(outDir);
             writeFileAt(
               outPath,
-              formatJson(JSON.stringify(cssVariables.getCssVariablesMap()))
+              JSON.stringify(cssVariables.getCssVariablesMap())
             );
           } else {
             for (const [path, object] of modulePathObjectMap.entries()) {
@@ -251,7 +249,7 @@ export class TokensToCli {
               await makeDir(outDirPath);
               writeFileAt(
                 outFilePath,
-                formatCss(JSON.stringify(cssVariables.getCssVariablesMap()))
+                JSON.stringify(cssVariables.getCssVariablesMap())
               );
               cssVariables.reset();
             }
