@@ -2,6 +2,9 @@
 
 It is somewhat cumbersome to prepare style tokens across design systems. Design and Style tokens can be defined various ways. However, once defining style tokens in Javascript(or Typescript), it is quite tedius and inefficient to write that again in other format such as css and json to be delivered or reused. **_tokens-to_** addresses that problem to ease the pain.
 
+### **[Notice]**
+It was commonjs module before 0.0.5, but I decided to move on to es module. The commonjs version will be archived on branch. As the most of tokens work with UI frameworks/libaries which utilizes es module.
+
 ## **Table of Contents**
 
 - [Installation](#installation)
@@ -22,15 +25,13 @@ npm install --save-dev tokens-to
 ### Example
 Let's say there is a js token like following.
 ```javascript
-const colors = {
+export const colors = {
   whites: [
     '#fffff0',
     '#fffff1'
     '#fffff2'
   ]
 }
-
-module.exports = { colors };
 
 ```
 And this is what you get after the conversion.
@@ -44,7 +45,7 @@ And this is what you get after the conversion.
 ```
 When there are multiple tokens like following,
 ```javascript
-const colors = {
+export const colors = {
   whites: [
     '#fffff0',
     '#fffff1'
@@ -52,15 +53,13 @@ const colors = {
   ]
 }
 
-const curves = {
+export const curves = {
   card: [
     10,
     20,
     30,
   ]
 }
-
-module.exports = { colors, curves };
 ```
 And then this is what you get after the conversion.
 ```css
@@ -79,10 +78,10 @@ And then this is what you get after the conversion.
 
 #### Module Exports
 
-To be converted into css, every source js module should export tokens with commonJs **_"module.exports"_** as following.
-
+To be converted into css, every source js module should export tokens with esm **_"export"_** as following.
+The **"export default"** will be converted into variables with prefix **"default"**.
 ```javascript
-module.exports = { colorTokens, typographyTokens };
+export { colorTokens, typographyTokens };
 ```
 
 Please keep this form(⬆️) of exporting object to get expected output files.
@@ -95,7 +94,7 @@ To configure converting to keep consistency and reusability, you can create **_t
 
 tokens-to.config.json
 
-```json
+```javascript
 {
   "css": {
     "sources": ["./tokens/*.js"],
@@ -116,10 +115,8 @@ tokens-to.config.json
 
 #### Configuration types and descriptions
 
-- sources: string[]; //Sources to be converted. Patterns are allowed.
-
-- outFileName: string; //Output file name, in case of converting into single css file(bundled).
-
+- **sources: string[];** //Sources to be converted. Patterns are allowed.
+- **outFileName: string;** //Output file name, in case of converting into single css file(bundled).
 - **outDir: string;** //Directory for output files.
 - **bundled: boolean;** //Whether output file is bundled into single file or not. If false, each sources file is converted into single css file. and outfile option is ignored.
 - **selector: string;** //Css selector that wraps css variables.
