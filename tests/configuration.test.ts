@@ -65,8 +65,8 @@ describe('Test functions for configurations', () => {
       )
     ).toEqual('/Users/hojooneum/tokenToCss/dist/css/tokens/color/black.css');
   });
-  test('Test getConfiguration', () => {
-    const configuration = getConfiguration();
+  test('Test getConfiguration', async () => {
+    const configuration = await getConfiguration();
     expect(configuration).toHaveProperty('css');
     expect(configuration.css).toHaveProperty('sources');
     expect(configuration.css).toHaveProperty('outFileName');
