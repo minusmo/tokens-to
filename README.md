@@ -1,8 +1,11 @@
 <h2 align="center">tokens-to</h2>
 
+[🇯🇵 Japanese](./README_JP.md)
+
 It is somewhat cumbersome to prepare style tokens across design systems. Design and Style tokens can be defined various ways. However, once defining style tokens in Javascript(or Typescript), it is quite tedius and inefficient to write that again in other format such as css and json to be delivered or reused. **_tokens-to_** addresses that problem to ease the pain.
 
 ### **[Notice]**
+
 It was commonjs module before 0.0.5, but I decided to move on to es module. The commonjs version will be archived on branch. As the most of tokens work with UI frameworks/libaries which utilizes es module.
 
 ## **Table of Contents**
@@ -22,8 +25,11 @@ npm install --save-dev tokens-to
 ```
 
 ## **Usage**
+
 ### Example
+
 Let's say there is a js token like following.
+
 ```javascript
 export const colors = {
   whites: [
@@ -34,16 +40,19 @@ export const colors = {
 }
 
 ```
+
 And this is what you get after the conversion.
+
 ```css
 :root {
   --colors-whites-0: #fffff0;
   --colors-whites-1: #fffff1;
   --colors-whites-2: #fffff2;
 }
-
 ```
+
 When there are multiple tokens like following,
+
 ```javascript
 export const colors = {
   whites: [
@@ -61,7 +70,9 @@ export const curves = {
   ]
 }
 ```
+
 And then this is what you get after the conversion.
+
 ```css
 :root {
   --colors-whites-0: #fffff0;
@@ -71,7 +82,6 @@ And then this is what you get after the conversion.
   --curves-card-1: 20;
   --curves-card-2: 30;
 }
-
 ```
 
 ### To Do Before converting
@@ -80,6 +90,7 @@ And then this is what you get after the conversion.
 
 To be converted into css, every source js module should export tokens with esm **_"export"_** as following.
 The **"export default"** will be converted into variables with prefix **"default"**.
+
 ```javascript
 export { colorTokens, typographyTokens };
 ```
